@@ -1,0 +1,27 @@
+# Run from the repository root after generating the complete datasets/musique.
+datasets:
+  - path: datasets/musique
+
+# Default: reference oracle verification, with no model/API credentials.
+agents:
+  - name: oracle
+
+# Agent/model selection for parity is deferred to guide Step 4.
+# agents:
+#   - name: codex
+#     model_name: <team-approved-model>
+#
+# agents:
+#   - name: claude-code
+#     model_name: <team-approved-model>
+
+environment:
+  type: docker
+  delete: true
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+
+n_attempts: 1
+jobs_dir: jobs

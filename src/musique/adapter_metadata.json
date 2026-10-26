@@ -1,0 +1,30 @@
+[
+  {
+    "adapter_name": "musique",
+    "adapter_builders": ["yk (yangkai@umich.edu)"],
+    "original_benchmark": [
+      {
+        "split": "musique-ans-dev",
+        "size": 2417,
+        "harness": "None",
+        "supported_agents": ["None"],
+        "adaptable": true,
+        "notes": "MuSiQue-Ans v1.0 development split. Upstream provides AllenNLP models and a deterministic evaluator, but no Harbor-compatible agent. Upstream commit: 922ac98f19a201998dbdae6d7f2887a5258dbdeb. Training, hidden-label test, and paired MuSiQue-Full splits are outside this initial adapter's scope."
+      }
+    ],
+    "harbor_adapter": [
+      {
+        "split": "musique-ans-dev",
+        "adapted_benchmark_size": 2417,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0.0,
+        "registry_benchmark_size": 0,
+        "added_agents": ["None"],
+        "parity_matching_agents": ["None"],
+        "parity_unmatching_agents": ["None"],
+        "parity_costs": "$0",
+        "notes": "WIP through guide Steps 1-3. No model parity experiments have run, so there are no matching or unmatching agent claims. The dataset is not published. Exact upstream answer_em, answer_f1, and support_f1 are retained."
+      }
+    ]
+  }
+]

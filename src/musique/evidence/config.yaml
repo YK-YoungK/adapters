@@ -1,0 +1,14 @@
+# Exact saved Harbor job configuration; absolute paths identify this execution.
+# For portable Docker reproduction, use ../run_musique.yaml from the repo root.
+job_name: oracle-final
+jobs_dir: /tmp/musique-harbor-jobs
+verifier_timeout_multiplier: 5.0
+n_concurrent_trials: 8
+environment:
+  type: podman
+  cpu_enforcement_policy: ignore
+  memory_enforcement_policy: ignore
+  extra_docker_compose:
+  - /tmp/musique-runtime-tools/offline-oracle.yaml
+datasets:
+- path: /tmp/musique-final-tasks

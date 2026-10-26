@@ -1,0 +1,19 @@
+{
+  "checked_at_utc": "2026-10-26T21:53:11.885199+00:00",
+  "expected_tasks": 2417,
+  "completed_trials": 2417,
+  "unique_task_names": 2417,
+  "per_trial_reward_files_match_results": true,
+  "metric_perfect_score_counts": {
+    "answer_em": 2417,
+    "answer_f1": 2417,
+    "support_f1": 2417
+  },
+  "missing_tasks": [],
+  "unexpected_tasks": [],
+  "exceptions": 0,
+  "job_finished_at": "2026-10-26T16:45:17.968882",
+  "source_data_sha256": "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b",
+  "source_result_sha256": "36d06ba87fdee35c03507f3aa7246fb8bfd74dae8029714c6f999bd791dadf0e",
+  "task_manifest_sha256": "408c44fae51b7187027523414932cc056279302f0018362b6df4c73bd0cf6152"
+}

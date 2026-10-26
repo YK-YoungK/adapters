@@ -1,0 +1,41 @@
+Removing trial directory with VerifierTimeoutError: 
+ans-dev-2hop-199513-801817__iK3zDrz
+Removing trial directory with VerifierTimeoutError: 
+ans-dev-2hop-35137-22899__4oG3ZNt
+Removing trial directory with VerifierTimeoutError: 
+ans-dev-2hop-363216-787353__FNve6A8
+Removing trial directory with VerifierTimeoutError: 
+ans-dev-2hop-502473-634689__aSBBFAR
+Removing trial directory with VerifierTimeoutError: 
+ans-dev-3hop1-92251-34179-23375__sZKqruX
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-105688-17130-70784__Hqftf5T
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-105773-457883-6506__gVx5nsc
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-107309-457883-6506__vHt3yRy
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-115977-582428-1578__dkQiEs6
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-118068-582428-1578__5VfFQcX
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-129682-59747-21131__sCCm57q
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-129721-32392-82306__2hZRYc9
+Removing trial directory with CancelledError: 
+ans-dev-4hop1-130276-59747-21131__uUpNCLq
+  2417/2417 Answer_Em: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:37:20 0:00:00musique-final-tasks • oracle
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Trials ┃ Exceptions ┃ Answer_Em ┃ Answer_F1 ┃ Support_F1 ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━┩
+│   2417 │          0 │     1.000 │     1.000 │      1.000 │
+└────────┴────────────┴───────────┴───────────┴────────────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │  2417 │
+│ 1.0    │  2417 │
+│ 1.0    │  2417 │
+└────────┴───────┘
+

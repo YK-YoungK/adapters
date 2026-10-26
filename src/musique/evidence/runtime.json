@@ -1,0 +1,138 @@
+{
+  "harbor": {
+    "version": "0.23.0",
+    "direct_url": {
+      "url": "https://github.com/harbor-framework/harbor.git",
+      "vcs_info": {
+        "vcs": "git",
+        "commit_id": "99218a4611e3bd76e49ce3b5f977e8c8134ad3ac",
+        "requested_revision": "99218a4611e3bd76e49ce3b5f977e8c8134ad3ac"
+      }
+    },
+    "executable": "/tmp/musique-harbor-runtime/bin/harbor"
+  },
+  "host_python": "3.13.5",
+  "podman": "podman version 4.9.4-rhel",
+  "podman_compose": "podman version 4.9.4-rhel\npodman-compose version 1.6.0",
+  "image": {
+    "tag": "docker.io/library/python:3.11.14-slim-bookworm",
+    "id": "44d8f4434bcb025b8cb5c3151be689a906223e47cc3146971feccda936d2e82b",
+    "repo_digests": [
+      "docker.io/library/python@sha256:65a93d69fa75478d554f4ad27c85c1e69fa184956261b4301ebaf6dbb0a3543d",
+      "docker.io/library/python@sha256:83f339c1be6340ae1096010fdccf6552ac932d8f410d45d206014916bdf37e48"
+    ]
+  },
+  "command_script": "#!/bin/bash\nset -euo pipefail\n/tmp/musique-runtime-tools/run-final-harbor run \\\n  -c /tmp/musique-runtime-tools/host-runtime.yaml \\\n  --extra-docker-compose /tmp/musique-runtime-tools/offline-oracle.yaml \\\n  -p /tmp/musique-final-tasks -a oracle \\\n  --jobs-dir /tmp/musique-harbor-jobs --job-name oracle-final \\\n  --verifier-timeout-multiplier 5 -n 8 \\\n  > /tmp/musique-harbor-jobs/oracle-final-terminal.log 2>&1\n",
+  "artifacts": {
+    "oracle-final-command.sh": {
+      "path": "/tmp/musique-runtime-tools/oracle-final-command.sh",
+      "sha256": "87a244f68ad4b7901a7400ef5110624b11a094f0115ec94b72c27b9c4e71e62e"
+    },
+    "host-runtime.yaml": {
+      "path": "/tmp/musique-runtime-tools/host-runtime.yaml",
+      "sha256": "ac05a4b286fdbc65cb523057eb8b42129e536b4018cd5a17bb802e14ef8442b0"
+    },
+    "offline-oracle.yaml": {
+      "path": "/tmp/musique-runtime-tools/offline-oracle.yaml",
+      "sha256": "17ceef0a82e7dfb63d9f5ce974350f392dd8a323eac174ec69d28a90c7de8388"
+    },
+    "podman": {
+      "path": "/tmp/musique-runtime-tools/bin/podman",
+      "sha256": "16ad0e889fe79dc833e9eda36c70b84d242705a63afccff0d14a89c4093e3441"
+    },
+    "run-final-harbor": {
+      "path": "/tmp/musique-runtime-tools/run-final-harbor",
+      "sha256": "4ee17730ad351e8dd6406f46a1a46ec0c9dea647d4d37f5776959ddff6221100"
+    },
+    "runtime-requirements.txt": {
+      "path": "/tmp/musique-runtime-tools/runtime-requirements.txt",
+      "sha256": "4164b458e0bda9de4558cbad46dcdc701d31a473df63222e23c8b7fc60841eac"
+    },
+    "final-task-manifest.json": {
+      "path": "/tmp/musique-runtime-tools/final-task-manifest.json",
+      "sha256": "408c44fae51b7187027523414932cc056279302f0018362b6df4c73bd0cf6152"
+    }
+  },
+  "notes": [
+    "Rootless Podman with local VFS storage and ignore_chown_errors=true due missing subordinate UID/GID ranges.",
+    "CPU/memory enforcement ignored because SLURM host does not delegate cgroups; this is a run-only setting.",
+    "Oracle-only network_mode=none avoids unavailable rootless CNI dnsmasq group switching.",
+    "Podman build --layers=false prevents concurrently deleted intermediate-layer cache races.",
+    "Original task timeout60s multiplied by5 for Podman exec overhead; benchmark data, grading, and oracle remain unchanged."
+  ],
+  "resumes": [
+    {
+      "command": "/tmp/musique-runtime-tools/run-final-harbor job resume -p /tmp/musique-harbor-jobs/oracle-final -f VerifierTimeoutError -f CancelledError > /tmp/musique-harbor-jobs/oracle-final-terminal.log 2>&1",
+      "initial_exception_counts": {
+        "VerifierTimeoutError": 5,
+        "CancelledError": 8
+      },
+      "initial_pending_trials": 393,
+      "initial_successful_trials": 2011,
+      "archive": "/tmp/musique-harbor-jobs/oracle-final-initial-exceptions",
+      "archived_files": {
+        "config.json": {
+          "path": "/tmp/musique-harbor-jobs/oracle-final-initial-exceptions/config.json",
+          "sha256": "e30a78907c085b69ee8994d19b554c701292ee5ad8a6007a60fac11cb3c86f88"
+        },
+        "result.json": {
+          "path": "/tmp/musique-harbor-jobs/oracle-final-initial-exceptions/result.json",
+          "sha256": "44ff9c77567e3acba2a419a4345be0b26d024d3781202c3dae47de1667bd0aac"
+        },
+        "terminal.log": {
+          "path": "/tmp/musique-harbor-jobs/oracle-final-initial-exceptions/terminal.log",
+          "sha256": "ed6590d7440bf17c95112c123cb3a13e02c9d16de0e15aa98d95ff97e7a58ddc"
+        },
+        "failed-trials.json": {
+          "path": "/tmp/musique-harbor-jobs/oracle-final-initial-exceptions/failed-trials.json",
+          "sha256": "40e40bf5a2529ad42bdff2578867527ed3b0855b72a797fe2c2bbfde499c4afb"
+        }
+      },
+      "notes": "Initial run exited130 due external interruption. Five VerifierTimeoutError events and eight in-flight cancellations were archived before Harbor retried them alongside393 pending tasks. Resume kept task files, runtime, timeout, concurrency, and job identity unchanged.",
+      "timeout_phases": {
+        "test_directory_upload": 4,
+        "chmod_test_script_before_execution": 1
+      }
+    }
+  ],
+  "final_result": {
+    "path": "/tmp/musique-harbor-jobs/oracle-final/result.json",
+    "sha256": "36d06ba87fdee35c03507f3aa7246fb8bfd74dae8029714c6f999bd791dadf0e",
+    "started_at": "2026-10-26T12:21:50.628210",
+    "finished_at": "2026-10-26T16:45:17.968882",
+    "completed_trials": 2417,
+    "errored_trials": 0,
+    "metrics": {
+      "answer_em": 1.0,
+      "answer_f1": 1.0,
+      "support_f1": 1.0
+    }
+  },
+  "final_terminal": {
+    "path": "/tmp/musique-harbor-jobs/oracle-final-terminal.log",
+    "sha256": "9d6a46302ec11ba3b554701652dec8817f9c65e6fc95a68eb6c7292102d23954"
+  },
+  "verification": {
+    "unique_task_count": 2417,
+    "perfect_trial_count": 2417,
+    "task_file_count": 45923,
+    "task_manifest_unchanged": true
+  },
+  "adapter_source_commit": "621386e1aedec60a984da2371337c74fb6f51861",
+  "adapter_contract_commit": "cfe10f29e1cd8dfeac70381f6547c006dcf8437b",
+  "source_data_sha256": "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b",
+  "task_manifest_file_count": 45923,
+  "original_job_directory": "/tmp/musique-harbor-jobs/oracle-final",
+  "job_timestamp_timezone": "America/Detroit",
+  "source_result_sha256": "36d06ba87fdee35c03507f3aa7246fb8bfd74dae8029714c6f999bd791dadf0e",
+  "screenshot_capture": {
+    "method": "Actual X11 screenshot of xterm displaying the unedited recorded final Harbor resume transcript",
+    "display": "Xvfb 1440x1000x24",
+    "capture_tool": "Python MSS 10.2.0",
+    "terminal_log": "oracle-terminal.log",
+    "terminal_log_sha256": "9d6a46302ec11ba3b554701652dec8817f9c65e6fc95a68eb6c7292102d23954",
+    "png": "oracle-terminal.png",
+    "png_sha256": "2cf1e218b5375a8f7e8ae9538d7740cbd7cbab655fd66356b966e7381f9d7a8f",
+    "postprocessing": "None"
+  }
+}

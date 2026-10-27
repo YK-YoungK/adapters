@@ -115,6 +115,8 @@ The default download checks the official archive and dev-file hashes. An explici
 
 ## Comparison with Original Benchmark (Parity)
 
+Adapter PR: [WIP #53](https://github.com/harbor-framework/adapters/pull/53).
+
 **Model parity has not been run.** `parity_experiment.json` is an empty array. Agents, models, repetitions, and an original-side agent wrapper will be agreed in Step 4. No parity fork, parity-results PR, or dataset PR exists yet. The [original repository](https://github.com/StonyBrookNLP/MuSiQue) remains the source of benchmark definitions.
 
 | Agent | Model | Metric | Runs | Dataset Size | Original (mean ± SEM) | Harbor (mean ± SEM) |

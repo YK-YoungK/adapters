@@ -1,0 +1,144 @@
+[
+  {
+    "adapter_name": "musique",
+    "adapter_builders": [
+      "Kai Yang (yangkai@umich.edu)"
+    ],
+    "original_benchmark": [
+      {
+        "split": "ans-train",
+        "size": 19938,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": true,
+        "notes": "Official v1.0 labeled train records; upstream AllenNLP models, no compatible CLI agent."
+      },
+      {
+        "split": "full-train",
+        "size": 39876,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": true,
+        "notes": "Official v1.0 labeled train records; upstream AllenNLP models, no compatible CLI agent."
+      },
+      {
+        "split": "ans-dev",
+        "size": 2417,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": true,
+        "notes": "Official v1.0 labeled dev records; upstream AllenNLP models, no compatible CLI agent."
+      },
+      {
+        "split": "full-dev",
+        "size": 4834,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": true,
+        "notes": "Official v1.0 labeled dev records; upstream AllenNLP models, no compatible CLI agent."
+      },
+      {
+        "split": "ans-test",
+        "size": 2459,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": false,
+        "notes": "Public test records omit answer, answer_aliases, answerable, question_decomposition and paragraph is_supporting. Cannot reproduce official grading or reference oracles locally; requires hidden gold labels or external leaderboard evaluation."
+      },
+      {
+        "split": "full-test",
+        "size": 4918,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": false,
+        "notes": "Public test records omit answer, answer_aliases, answerable, question_decomposition and paragraph is_supporting. Cannot reproduce official grading or reference oracles locally; requires hidden gold labels or external leaderboard evaluation."
+      }
+    ],
+    "harbor_adapter": [
+      {
+        "split": "ans-train",
+        "adapted_benchmark_size": 19938,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0,
+        "registry_benchmark_size": 0,
+        "added_agents": [
+          "None"
+        ],
+        "parity_matching_agents": [
+          "None"
+        ],
+        "parity_unmatching_agents": [
+          "None"
+        ],
+        "parity_costs": "$0",
+        "notes": "WIP. Parity not run; not registered. Train/dev evaluated separately; Full pairs independent records by question ID. Training oracle run not performed."
+      },
+      {
+        "split": "full-train",
+        "adapted_benchmark_size": 39876,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0,
+        "registry_benchmark_size": 0,
+        "added_agents": [
+          "None"
+        ],
+        "parity_matching_agents": [
+          "None"
+        ],
+        "parity_unmatching_agents": [
+          "None"
+        ],
+        "parity_costs": "$0",
+        "notes": "WIP. Parity not run; not registered. Train/dev evaluated separately; Full pairs independent records by question ID. Training oracle run not performed."
+      },
+      {
+        "split": "ans-dev",
+        "adapted_benchmark_size": 2417,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0,
+        "registry_benchmark_size": 0,
+        "added_agents": [
+          "None"
+        ],
+        "parity_matching_agents": [
+          "None"
+        ],
+        "parity_unmatching_agents": [
+          "None"
+        ],
+        "parity_costs": "$0",
+        "notes": "WIP. Parity not run; not registered. Train/dev evaluated separately; Full pairs independent records by question ID. Earlier dev-only snapshot has partial oracle evidence; current split extension is not fully oracle verified."
+      },
+      {
+        "split": "full-dev",
+        "adapted_benchmark_size": 4834,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0,
+        "registry_benchmark_size": 0,
+        "added_agents": [
+          "None"
+        ],
+        "parity_matching_agents": [
+          "None"
+        ],
+        "parity_unmatching_agents": [
+          "None"
+        ],
+        "parity_costs": "$0",
+        "notes": "WIP. Parity not run; not registered. Train/dev evaluated separately; Full pairs independent records by question ID. Earlier dev-only snapshot has partial oracle evidence; current split extension is not fully oracle verified."
+      }
+    ]
+  }
+]

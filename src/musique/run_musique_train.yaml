@@ -1,0 +1,34 @@
+# Train split: run from src/musique after generating with --split train.
+datasets:
+  - path: datasets/musique-train
+
+# Default: reference oracle verification, with no model/API credentials.
+agents:
+  - name: oracle
+
+# Agent/model selection for parity is deferred to guide Step 4.
+# agents:
+#   - name: codex
+#     model_name: <team-approved-model>
+#
+# agents:
+#   - name: claude-code
+#     model_name: <team-approved-model>
+
+environment:
+  type: docker
+  delete: true
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+
+n_attempts: 1
+jobs_dir: jobs
+
+# Required: Full sufficiency scores combine independent trials by question ID.
+# Plain mean aggregation would mix numeric grouping fields into the scores.
+metrics:
+  - type: uv-script
+    kwargs:
+      script_path: src/musique/aggregate.py

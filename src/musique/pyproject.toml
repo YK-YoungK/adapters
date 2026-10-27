@@ -1,0 +1,19 @@
+[project]
+name = "harbor-musique-adapter"
+version = "0.1.0"
+description = "Harbor adapter for MuSiQue-Ans and MuSiQue-Full multi-hop question answering"
+readme = "README.md"
+authors = [{ name = "Kai yang", email = "yangkai@umich.edu" }]
+requires-python = ">=3.11"
+dependencies = ["gdown>=5.2,<6"]
+
+[project.scripts]
+musique = "musique.main:main"
+musique-metrics = "musique.aggregate:main"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/musique"]

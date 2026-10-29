@@ -91,7 +91,7 @@ def empty_reward(gold: dict) -> dict[str, float | int]:
         "answer_em": 0.0,
         "support_f1": 0.0,
     }
-    # Preserve the reward schema of previously generated development tasks.
+    # Legacy development tasks predate explicit split metadata.
     if "split" in gold:
         reward["split"] = int(gold["split"] == "train")
     return reward
@@ -125,6 +125,17 @@ def score_prediction(prediction: object, gold: dict) -> dict[str, float | int]:
     return reward
 
 
+def public_metrics(scores: dict) -> dict[str, float | int]:
+    """Expose applicable scores, keeping labels and grouping IDs in artifacts."""
+    metrics = {}
+    if scores["answerable"]:
+        metrics.update({name: scores[name] for name in ("answer_f1", "answer_em", "support_f1")})
+    if scores["variant"] == 1:
+        # This is prediction correctness, not the gold answerability label.
+        metrics["sufficiency_correct"] = scores["sufficiency_correct"]
+    return metrics
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prediction", type=Path, default=Path("/workspace/prediction.json"))
@@ -154,6 +165,8 @@ def main(argv: list[str] | None = None) -> int:
             encoding="utf-8",
         )
 
+    # Required by the adapter contract; benchmark scores are computed by the
+    # post-run audit, not this per-record compatibility value.
     diagnostic_reward = reward["answer_f1"]
     if gold["variant"] == "full":
         diagnostic_reward = (
@@ -161,8 +174,9 @@ def main(argv: list[str] | None = None) -> int:
             if record["answerable"] else reward["sufficiency_correct"]
         )
     (args.output_dir / "reward.txt").write_text(f"{diagnostic_reward}\n", encoding="utf-8")
+    metrics = public_metrics(reward)
     (args.output_dir / "reward.json").write_text(
-        json.dumps(reward, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+        json.dumps(metrics, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (args.output_dir / "diagnostics.json").write_text(
         json.dumps(
@@ -170,7 +184,7 @@ def main(argv: list[str] | None = None) -> int:
             indent=2,
         ) + "\n", encoding="utf-8",
     )
-    print(json.dumps(reward, sort_keys=True))
+    print(json.dumps(metrics, sort_keys=True))
     # Malformed submissions are scored failures, not infrastructure errors.
     return 0
 

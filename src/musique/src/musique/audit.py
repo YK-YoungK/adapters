@@ -12,6 +12,7 @@ import sys
 import tomllib
 
 from musique.aggregate import aggregate_rewards
+from musique.trial_metrics import aggregate_trial_metrics
 
 
 VERIFIER_DIR = Path(__file__).parent / "task-template/tests"
@@ -137,14 +138,32 @@ def audit_job(
         prediction = _read_json(prediction_path)
         regenerated = verifier.score_prediction(prediction, task["gold"])
         saved = _read_json(trial_dir / "verifier/reward.json")
-        if regenerated != saved:
+        if "variant" in saved or "group_id" in saved:
+            # Legacy jobs carried private grouping fields in reward.json.
+            # Validate their complete schema, including an optional old scalar.
+            aggregate_rewards([saved])
+            expected = regenerated.copy()
+            if "reward" in saved:
+                value = regenerated["answer_f1"]
+                if regenerated["variant"] == 1:
+                    value = (
+                        regenerated["answer_f1"] * regenerated["sufficiency_correct"]
+                        if regenerated["answerable"] else regenerated["sufficiency_correct"]
+                    )
+                expected["reward"] = value
+        else:
+            aggregate_trial_metrics([saved])
+            expected = verifier.public_metrics(regenerated)
+        if expected != saved:
             raise ValueError(f"Saved reward does not match the exported prediction: {trial_dir}")
         recorded_verifier = result.get("verifier_result")
         if not isinstance(recorded_verifier, dict) or recorded_verifier.get("rewards") != saved:
             raise ValueError(f"Trial result rewards differ from verifier/reward.json: {trial_dir}")
         if require_perfect:
             _require_perfect_reward(regenerated, task["name"])
-        rewards.append(saved)
+        # Pairing identity and answerability come from task gold, independently
+        # of the sparse public metrics that Harbor receives from each trial.
+        rewards.append(regenerated)
         variant = task["gold"]["variant"]
         grouped_rows.setdefault(variant, []).append((task["gold"]["record"], prediction))
         agent_info = result.get("agent_info", {})
@@ -209,7 +228,10 @@ def main(argv: list[str] | None = None) -> int:
         summary = audit_job(args.tasks, args.job, args.output, require_perfect=args.require_perfect)
     except (OSError, ValueError, KeyError, TypeError) as error:
         parser.exit(1, f"MuSiQue audit failed: {error}\n")
-    print(json.dumps({"audited_trials": summary["audited_trials"], "metrics": summary["official_metrics"]}, indent=2))
+    print(json.dumps({
+        "audited_trials": summary["audited_trials"],
+        "metrics": summary["official_metrics"],
+    }, indent=2))
     print(f"Audit saved to {args.output / 'audit.json'}")
     return 0
 

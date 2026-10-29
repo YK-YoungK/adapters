@@ -46,14 +46,18 @@ the train and development splits, enabling deterministic reference solutions.
   aliases and decompositions are excluded from the agent's instruction and image.
 - A reference oracle writes the upstream gold prediction. No model or API key is needed.
 - Vendored upstream answer and support metrics with no runtime dependencies beyond Python.
-- A Harbor `uv-script` metric computes answer F1, answer EM, support F1 and Full's
-  grouped answer/support sufficiency F1. Raw scores are averaged before upstream's
-  three-decimal rounding. The Full answer/support denominator includes only its
-  answerable records; both sufficiency predictions must be correct for group credit.
+- Harbor receives only applicable per-record scores; grouping IDs and gold labels
+  stay in verifier artifacts. Live `record_*` means are diagnostics across the
+  selected records, averaging only records for which each score applies.
+- The post-run audit computes the original answer F1, answer EM, support F1 and
+  Full's grouped answer/support sufficiency F1 separately for each variant. Raw
+  scores are averaged before upstream's three-decimal rounding. Full answer/support
+  metrics include only answerable records; both sufficiency predictions must be
+  correct for group credit.
 - `--task-ids` and `--limit` keep Full pairs intact. One attempt per Harbor job;
   repeat experiments as separate jobs.
-- Split-specific task names, source checksums, and metadata. Generation, metric
-  aggregation, and auditing reject mixed train/dev datasets rather than pooling scores.
+- Split-specific task names, source checksums, and metadata. Generation and the
+  post-run audit reject mixed train/dev datasets rather than pooling their scores.
 
 No custom agent is implemented at this stage. Upstream uses trained AllenNLP models;
 any compatible LLM agent and parity protocol require Step 4 coordination.
@@ -78,10 +82,29 @@ any compatible LLM agent and parity protocol require Step 4 coordination.
 
 The agent writes the official prediction object to `/workspace/prediction.json`:
 `id`, `predicted_answer`, `predicted_support_idxs`, `predicted_answerable`.
-The verifier exports that prediction, raw score components and diagnostics under
-`/logs/verifier`. It writes both `reward.txt` and `reward.json`; Harbor reads the
-latter. The scalar text reward is a per-record diagnostic, not the Full group score.
-Use the configured reducer for benchmark results.
+The verifier exports the prediction and diagnostics under `/logs/verifier`.
+Harbor reads `reward.json`, which contains only applicable per-record scores:
+`answer_f1`, `answer_em`, and `support_f1` for answerable records, plus
+`sufficiency_correct` for Full records. An unanswerable Full record reports only
+`sufficiency_correct`: its answer and support scores are inapplicable and omitted.
+This correctness score is 1 for correctly recognizing insufficient evidence and
+0 for an incorrect answerability prediction; it is not the gold answerability label.
+
+Every emitted score is 1 for a correct oracle prediction. Grouping fields such as
+`variant`, `group_id`, `split`, and `answerable` are stored in
+`diagnostics.json`, outside Harbor's reward dictionary. `reward.txt` remains the
+numeric compatibility output required by the adapter contract; there is no added
+primary `reward` metric or task-reward mean in the benchmark report.
+
+The authoritative report is produced by the post-run audit using task gold and
+exported predictions. It preserves the upstream metric names:
+
+- Ans: `answer_f1`, `answer_em`, `support_f1`.
+- Full: those three plus `group_answer_sufficiency_f1` and
+  `group_support_sufficiency_f1`.
+
+Full group scores require both independently answered contexts. They cannot be
+computed by one record's verifier, so they are calculated after the job.
 
 ## Run Evaluation / Harness
 
@@ -98,10 +121,17 @@ harbor run -c run_musique_train.yaml --job-name musique-train-oracle
 ```
 
 
-Use the reference configs to enable the required metric reducer. **Bare
-`harbor run -p ...` uses Harbor's default mean, which is not valid MuSiQue
-aggregation**, because raw rewards carry grouping metadata and Full scores require
-pairing. Run train and dev as separate jobs.
+The reference configs use `trial_metrics.py` for live `record_*` diagnostic
+means. Missing/inapplicable fields are excluded from each mean. If both variants
+are selected, these diagnostics pool their records; they are not the official
+variant-specific benchmark report. **Bare `harbor run -p ...` uses Harbor's default
+mean, which treats missing metric keys as zero.** Use the configs and the post-run
+audit below to preserve MuSiQue's denominators and Full pair scoring. Run train
+and dev as separate jobs.
+
+Null trial rewards are excluded from live diagnostic means and counted separately
+as `null_rewards`. The final audit rejects missing or errored trials; live means
+alone do not establish complete coverage.
 
 For a small smoke test, select one upstream question ID (three tasks across both
 variants), then point a copy of the dev config's dataset path at that directory:
@@ -135,6 +165,11 @@ and original evaluation results. It exports prediction/gold JSONL files and an
 directory to determine expected coverage. Results are preserved under `jobs/`.
 Use a new job name for a fresh run. If adapter code changes, regenerate tasks before
 starting the new run.
+
+The audit also supports older jobs whose `reward.json` included grouping metadata
+or the earlier primary scalar. It checks their saved components against the same
+recomputed scores without rewriting existing artifacts. New jobs use the smaller
+metric-only reward schema.
 
 ## Usage: Create Task Directories
 
@@ -225,10 +260,9 @@ sides. A multi-record agent context would change the benchmark and is not suppor
   wrapper renders those inputs as JSON and specifies an output file. No question,
   paragraph or gold label is rewritten. Future original-side parity must apply
   this same wrapper.
-- Full group scores shown during a job are provisional. `full_pending_pairs` and
-  `null_rewards` must be zero at completion; final certification must also check
-  exact generated-task coverage. Multiple attempts in one job are rejected as
-  duplicate records.
+- Full group scores are computed by the post-run audit, which requires complete
+  pairs, no missing rewards, and exact generated-task coverage. Multiple attempts
+  in one job are rejected as duplicate records.
 - Malformed/missing agent predictions receive zero scores with diagnostics.
   Corrupt gold data is an infrastructure error. Numeric support indices follow
   upstream's integer conversion and set semantics.
@@ -272,8 +306,13 @@ results. Installed package metadata and `harbor --version` can differ; record bo
   `dev` for locally verified tasks. Test requires official external grading.
 - Mixed split error: generate and evaluate train/dev in separate dataset directories;
   `--overwrite` does not permit changing an existing directory's split.
-- Scores missing or unexpectedly halved: run through `run_musique.yaml`, which uses
-  the pair-aware reducer rather than Harbor's default mean.
+- Scores missing or unexpectedly halved: use the reference config for sparse
+  per-record diagnostic means, then run the audit for official variant-specific
+  metrics. Ordinary Harbor means treat inapplicable fields as zero.
+- Unexpected numeric IDs or placeholder zeros in Harbor's Reward/Count table:
+  regenerate tasks with the current adapter using `--overwrite` and use a new job
+  name. Earlier task versions exposed grouping metadata as reward fields. Existing
+  jobs remain auditable; their stored output is not rewritten.
 - Container startup errors: inspect the trial exception/logs. An environment failure
   is not a benchmark score and must be fixed before interpreting oracle results.
 

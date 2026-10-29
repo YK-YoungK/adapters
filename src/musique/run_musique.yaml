@@ -26,9 +26,9 @@ orchestrator:
 n_attempts: 1
 jobs_dir: jobs
 
-# Required: Full sufficiency scores combine independent trials by question ID.
-# Plain mean aggregation would mix numeric grouping fields into the scores.
+# Per-record diagnostics average only applicable public score components.
+# Run musique.audit after completion for official variant and paired Full scores.
 metrics:
   - type: uv-script
     kwargs:
-      script_path: src/musique/aggregate.py
+      script_path: src/musique/trial_metrics.py

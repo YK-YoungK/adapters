@@ -1,9 +1,10 @@
-"""Aggregate independent MuSiQue trials with the official paired Full scores.
+"""Aggregate private per-record components for the post-run MuSiQue audit.
 
-Harbor calls this script during jobs. Incomplete pairs are counted explicitly;
-group scores are provisional until every pair is complete. Use --require-complete
-for final audits and compare record counts with the generation manifest. Repeats
-must run as separate Harbor jobs, each with n_attempts=1.
+These records include grouping IDs and gold answerability, reconstructed from
+task gold and exported predictions. They are not Harbor's public reward metrics.
+Incomplete pairs are counted explicitly; use --require-complete for final audits
+and compare record counts with the generation manifest. Repeats must run as
+separate Harbor jobs, each with n_attempts=1.
 Train and development records must be evaluated as separate datasets.
 """
 
@@ -49,6 +50,18 @@ def aggregate_rewards(
                 raise ValueError(f"Reward {name} must be a finite score in [0, 1]")
         if reward["variant"] == 0 and reward["answerable"] != 1:
             raise ValueError("MuSiQue-Ans cannot contain unanswerable rewards")
+        # Accept and validate artifacts from the earlier primary-reward schema,
+        # without adding that diagnostic to the official benchmark report.
+        if "reward" in reward:
+            task_reward = reward["answer_f1"]
+            if reward["variant"] == 1:
+                task_reward = (
+                    reward["answer_f1"] * reward["sufficiency_correct"]
+                    if reward["answerable"] else reward["sufficiency_correct"]
+                )
+            value = reward["reward"]
+            if type(value) not in (int, float) or not math.isfinite(value) or value != task_reward:
+                raise ValueError("Primary reward does not match the raw MuSiQue score components")
         key = reward["variant"], reward["group_id"]
         answerable = reward["answerable"]
         if answerable in grouped[key]:
@@ -96,7 +109,7 @@ def aggregate_rewards(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("-i", "--input", required=True, type=Path, help="Harbor rewards JSONL")
+    parser.add_argument("-i", "--input", required=True, type=Path, help="Private score-component JSONL (including grouping metadata)")
     parser.add_argument("-o", "--output", required=True, type=Path)
     parser.add_argument("--require-complete", action="store_true", help="Reject missing pairs or rewards")
     args = parser.parse_args(argv)

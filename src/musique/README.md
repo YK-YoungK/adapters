@@ -331,4 +331,4 @@ results. Installed package metadata and `harbor --version` can differ; record bo
 ## Authors & Contributions
 
 - Benchmark: Harsh Trivedi, Niranjan Balasubramanian, Tushar Khot and Ashish Sabharwal.
-- Harbor adapter: yk (yangkai@umich.edu).
+- Harbor adapter: Kai Yang (yangkai@umich.edu).

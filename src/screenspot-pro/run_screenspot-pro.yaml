@@ -1,0 +1,17 @@
+# Run from the adapters repository root, after generating tasks.
+datasets:
+  - path: datasets/screenspot-pro
+agents:
+  - name: oracle
+# For a later vision-capable CLI-agent experiment (parity not yet established):
+# agents:
+#   - name: claude-code
+#     model_name: anthropic/claude-sonnet-4-5-20250929
+environment:
+  type: docker
+  delete: true
+orchestrator:
+  type: local
+  n_concurrent_trials: 4
+jobs_dir: jobs
+n_attempts: 1

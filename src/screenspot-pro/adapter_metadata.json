@@ -1,0 +1,68 @@
+[
+  {
+    "adapter_name": "screenspot-pro",
+    "adapter_builders": [
+      "Kai Yang (yangkai@umich.edu)"
+    ],
+    "original_benchmark": [
+      {
+        "split": "en",
+        "size": 1581,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": true,
+        "notes": "English positive grounding, instruction style. Official likaixin/ScreenSpot-Pro revision 210e78d3844251110bff86c95835ebd37a6930fa; 26 annotation JSON files. Upstream uses model wrappers, not Harbor CLI agents."
+      },
+      {
+        "split": "cn",
+        "size": 1581,
+        "harness": "llm",
+        "supported_agents": [
+          "None"
+        ],
+        "adaptable": true,
+        "notes": "Chinese positive grounding, instruction style. Official likaixin/ScreenSpot-Pro revision 210e78d3844251110bff86c95835ebd37a6930fa; 26 annotation JSON files. Upstream uses model wrappers, not Harbor CLI agents."
+      }
+    ],
+    "harbor_adapter": [
+      {
+        "split": "en",
+        "adapted_benchmark_size": 1581,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0.0,
+        "registry_benchmark_size": 0,
+        "added_agents": [
+          "None"
+        ],
+        "parity_matching_agents": [
+          "None"
+        ],
+        "parity_unmatching_agents": [
+          "None"
+        ],
+        "parity_costs": "$0",
+        "notes": "English configuration; en is default and cn is optional. No tasks excluded."
+      },
+      {
+        "split": "cn",
+        "adapted_benchmark_size": 1581,
+        "parity_benchmark_size": 0,
+        "parity_sampling_rate": 0.0,
+        "registry_benchmark_size": 0,
+        "added_agents": [
+          "None"
+        ],
+        "parity_matching_agents": [
+          "None"
+        ],
+        "parity_unmatching_agents": [
+          "None"
+        ],
+        "parity_costs": "$0",
+        "notes": "Chinese configuration; en is default and cn is optional. No tasks excluded."
+      }
+    ]
+  }
+]

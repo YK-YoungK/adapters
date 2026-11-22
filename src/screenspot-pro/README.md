@@ -48,11 +48,11 @@ Every `task.toml` uses schema version `"1.0"`, a namespaced task name, and attri
 
 Registry evaluation is unavailable until the dataset is published in the later registration step. After publication, the expected namespace is `screenspot-pro/screenspot-pro`; do not use registry commands to validate this unpublished implementation.
 
-Generate tasks using the next section, then run the following **from the adapters repository root on a Docker-capable machine**:
+Generate tasks using the next section, then run the following on a Docker-capable machine:
 
 ```bash
 # Default agent is oracle.
-harbor run -c src/screenspot-pro/run_screenspot-pro.yaml
+harbor run -c run_screenspot-pro.yaml
 
 # Equivalent full-dataset invocation.
 harbor run -p datasets/screenspot-pro -a oracle

@@ -30,6 +30,7 @@ upstream_revision = "$upstream_revision"
 timeout_sec = 300.0
 
 [verifier]
+environment_mode = "separate"
 timeout_sec = 30.0
 
 [environment]

@@ -68,7 +68,7 @@ The reference configuration writes results under `jobs/`. Confirm 100% oracle re
 ```bash
 cd src/screenspot-pro
 uv sync --locked
-uv run screenspot-pro --output-dir ../../datasets/screenspot-pro
+uv run screenspot-pro --output-dir datasets/screenspot-pro
 
 # Small generation smoke check.
 uv run screenspot-pro --output-dir /tmp/screenspot-pro-smoke --limit 3
@@ -79,11 +79,11 @@ uv run screenspot-pro --output-dir /tmp/screenspot-pro-selected \
 
 # Use an already downloaded official dataset; no network download is needed.
 uv run screenspot-pro --dataset-dir /path/to/ScreenSpot-Pro \
-  --output-dir ../../datasets/screenspot-pro
+  --output-dir datasets/screenspot-pro
 
 # Chinese configuration; use a separate output directory for separate reporting.
 uv run screenspot-pro --language cn \
-  --output-dir ../../datasets/screenspot-pro-cn
+  --output-dir datasets/screenspot-pro-cn
 ```
 
 The local dataset root must contain `annotations/*.json` and `images/`, retaining upstream relative image paths. It is the raw official dataset layout, not a third-party parquet conversion.
